@@ -25,15 +25,15 @@ class Segment(tuple):
                 self.axis = i
 
 
-    def collided(self, player: Player):
+    def collided(self, move: Tuple[int, int], player: Player):
         if not straight:
-            return collided_diagonal
+            return self.collided_diagonal(move, player)
         new = player.rect.position[] + move[i]
         if new - radius[i] > self.rect.size[i] or new + radius[i] < 0:
             move[i] = 0
+        return move
 
-
-    def collided_diagonal(self, player: Player):
+    def collided_diagonal(self, move: Tuple[int, int], player: Player):
         pos = player.rect.position
         radius = player.radius
         for x in range(self[0][0], self[1][0]):
@@ -44,7 +44,7 @@ class Segment(tuple):
             length = Segment.get_diagonal((x - pos[0]), (y - pos[1]))
             if length <= radius:
                 return (0, 0)
-        return (0, 0)
+        return move
 
     @staticmethod
     def get_slope(point_a: Union[Point, Tuple[int, int]], point_b: Union[Point, Tuple[int, int]]):
@@ -60,6 +60,8 @@ class Segment(tuple):
 
 
 class Door(Segment):
-    def __init__(self, point_a: Point, point_b: Point, dest: Map):
+    def __init__(self, point_a: Point, point_b: Point, dest_id: int:
         super().__init__(point_a, point_b)
-        self.dest = dest
+        self.dest_id=dest_id
+        
+    def 

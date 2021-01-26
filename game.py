@@ -2,13 +2,13 @@ import pygame, json, sys
 from pygame import Rect, Surface
 from pygame.sprite import Sprite, Group
 from boxes import Box, Building
-from typing import List, Union, Tuple
+from typing import List, Union, Tuple, Optional
 
 
 class Map(Group):
-    def __init__(self, background: Surface, rect: Rect, sprites: List[Sprite], doors: List[Door]):
+    def __init__(self, image: Surface, rect: Rect, sprites: List[Sprite], doors: List[Door]):
         self.rect = rect
-        self.surf = pygame.transform.scale(background, self.rect.size)
+        self.image = pygame.transform.scale(image, self.rect.size)
         super().__init__(sprites)
         self.outline = Building.get_segments(Box.get_points(self.rect))
         self.doors = doors
@@ -16,10 +16,10 @@ class Map(Group):
         self.boundaries = []
         for sprite in sprites:
             self.points.extend(sprite.points)
-            if sprite is Building:
-                self.doors.extend(sprite.doors)
-                self.boundaries.extend(sprite.boundaries)
-    
+                if sprite is Building:
+                    self.doors.extend(sprite.doors)
+                    self.boundaries.extend(sprite.boundaries)
+
     def detect_collision(self, move: Tuple[int, int], player: Player):
         radius = player.radius
         for i in range(2):
@@ -27,14 +27,13 @@ class Map(Group):
             if new - radius[i] > self.rect.size[i] or new + radius[i] < 0:
                 move[i] = 0
         for boundary in self.boundaries:
-            if boundary.collide(player):
-
+            move = boundary.collide(move, player)
 
     def draw(self, screen: Surface):
-        super().__init__(self.surf)
-        screen.blit(self.surf, self.rect)
+        super().__init__(self.image)
+        screen.blit(self.image, self.rect)
 
-    def update(self, game: Game):
+    def update(self, game: Optional[Game]):
         for sprite in self.sprites():
             sprite.update(game)
 
@@ -46,7 +45,7 @@ class Player(Sprite):
         self.rect = rect
 
     def update(self, game: Game):
-        move = game.map.detect_collision(Game.move, self.rect.position)
+        move = game.map.detect_collision(Game.move, self)
         self.rect.move(move[0], move[1])
 
 
@@ -62,6 +61,7 @@ class Game(object):
             self.parse(json.load(file))
         self.move = (0, 0)
         while True:
+            self.map.draw(self.screen)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.exit()
@@ -78,12 +78,36 @@ class Game(object):
                 elif event.type == pygame.KEYUP:
                     self.move = (0, 0)
             self.map.update(self)
-            self.map.draw(self.screen)
+            pygame.display.update()
 
     def change_map(self, new_map: Map):
         if self.map:
-            self.map.remove(self.player)
+            self.player.remove(self.map)
         self.map = new_map
-        self.map.add(self.player)
+        self.player.add(self.map)
 
     def parse(self, data: dict):
+        self.maps = []
+        for raw_map in data.get("maps"):
+            sprites = []
+            for raw_sprite in raw_map.get("sprites"):
+                SpriteType: TypeAlias = raw_sprite.get("type")
+                image = pygame.image.load(os.abspath(raw_sprite.get("image"))).convert_alpha()
+                SpriteType(
+                    Rect(raw_sprite.get("pos"), image.get_size()),
+                    image,
+                    [Door(pos[0], pos[1], dest_id) for dest_id, pos in raw_sprite.get("doors")]
+                )
+            self.maps.append(Map(
+                pygame.image.load(raw_map.get("image")).convert_alpha(),
+                Rect(raw_map.get("pos"), raw_map.get("size")),
+                sprites,
+                [Door(pos[0], pos[1], dest_id) for dist_id, pos in raw_map.get("doors")]
+            ))
+        raw_player = data.get("player")
+        self.player = Player(
+            raw_player.get("name"),
+            pygame.image.load(os.abspath(raw_player.get("image"))).convert_alpha(),
+            Rect(raw_player.get("current").get("pos"), raw_player.get(image.get_size()))
+        )
+        self.change_map(self.maps[raw_player.get("current").get("map")])

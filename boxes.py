@@ -7,7 +7,7 @@ from typing import List, Tuple
 
 
 class Box(Sprite):
-    def __init__(self, rect: Rect, image: Surface):
+    def __init__(self, rect: Rect, image: Surface, *args):
         super().__init__()
         self.rect = rect
         self.points = Box.get_points(self.rect)
@@ -24,10 +24,10 @@ class Box(Sprite):
 
 
 class Building(Box):
-    def __init__(self, rect: Rect, image: Surface, door: Door):
+    def __init__(self, rect: Rect, image: Surface, doors: List[Door]):
         super().__init__(rect, image)
-        self.door = door
         self.boundaries = Building.get_segments(self.points)
+        self.doors = doors
 
     @staticmethod
     def get_segments(points: List[Point]):
