@@ -1,67 +1,53 @@
 import pygame
 from pygame import Surface, Rect
-from game import Map, Game
-from boxes import Box, Building
 from typing import Tuple, Union
 from math import sqrt
 
 
-class Point(tuple):
-    def __init__(self, x: int, y: int):
-        super().__init__([x, y])
-
-    def closeness(self, pos: Tuple[int, int]):
-        return abs(pos[0] - self[0]) + abs(pos[1] - self[1])
+class SegmentNotStraightException(Exception):
+    def __init__(self, point_a: Tuple[int, int], point_b: Tuple[int, int]):
+        super().__init__(f"{point_a} is not on the same line as {point_b}, while initializing Segment object.")
 
 
-class Segment(tuple):
-    def __init__(self, point_a: Point, point_b: Point):
-        super().__init__([point_a, point_b])
-        self.slope = Segment.get_slope(self[0], self[1])
-        self.y_intercept = Segment.get_y_intercept(self[0], self.slope)
-        self.axis = None
+class Segment(object):
+    """Connects two points together, can be used for boundaries"""
+    
+    def __init__(self, point_a: Tuple[int, int], point_b: Tuple[int, int]):
+        self.mid = None
         for i in range(2):
             if point_a[i] == point_b[i]:
-                self.axis = i
+                self.mid = i
+        if self.mid is None:
+            raise SegmentNotStraightException(point_a, point_b)
+        self.points = (point_a, point_b)
+    def get_mid(self):
+        """Gets midpoint of segment (i.e. for (1, 3) and (5, 3) it would return 3)"""
+        return self.points[self.mid]
 
-
-    def collided(self, move: Tuple[int, int], player: Player):
-        if not straight:
-            return self.collided_diagonal(move, player)
-        new = player.rect.position[] + move[i]
-        if new - radius[i] > self.rect.size[i] or new + radius[i] < 0:
-            move[i] = 0
-        return move
-
-    def collided_diagonal(self, move: Tuple[int, int], player: Player):
-        pos = player.rect.position
-        radius = player.radius
-        for x in range(self[0][0], self[1][0]):
-            y = (self.slope * x) + self.y_intercept
-            slope = Segment.get_slope(pos, (x, y))
-            if self.slope * slope != -1:
-                continue
-            length = Segment.get_diagonal((x - pos[0]), (y - pos[1]))
-            if length <= radius:
-                return (0, 0)
-        return move
-
-    @staticmethod
-    def get_slope(point_a: Union[Point, Tuple[int, int]], point_b: Union[Point, Tuple[int, int]]):
-        return (point_b[1] - point_a[1]) / (point_b[0] - point_a[0])
-
-    @staticmethod
-    def get_y_intercept(point: Point, slope: int):
-        return point[1] - (slope * point[0])
-
-    @staticmethod
-    def get_diagonal(width: int, height: int):
-        return sqrt(width ** 2 + height ** 2)
+# static functions to get slope, y-intercept, and diagonal,
+# for before I decided to not have any diagonal lines in the program.
+#    @staticmethod
+#    def get_slope(point_a: Tuple[int, int], point_b: Tuple[int, int]):
+#        return (point_b[1] - point_a[1]) / (point_b[0] - point_a[0])
+#
+#    @staticmethod
+#    def get_y_intercept(point: Tuple[int, int], slope: int):
+#        return point[1] - (slope * point[0])
+#
+#    @staticmethod
+#    def get_diagonal(width: int, height: int):
+#        return sqrt(width ** 2 + height ** 2)
 
 
 class Door(Segment):
-    def __init__(self, point_a: Point, point_b: Point, dest_id: int:
+    """A segment that, when the player collides, instead of just
+    blocking the movement, it moves the player to another map."""
+    
+    def __init__(self, point_a: Tuple[int, int], point_b: Tuple[int, int], dest_id: int):
         super().__init__(point_a, point_b)
-        self.dest_id=dest_id
-        
-    def 
+        self.dest_id = dest_id
+
+    def go_through(self, game):
+        """Since the init function only takes in the destination index,
+        this function gets the game object and returns the correct destination"""
+        game.change_map(game.maps[self.dest_id])

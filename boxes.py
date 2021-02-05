@@ -2,11 +2,13 @@ import pygame, random, pokebase
 import pokebase.interface
 from pygame import Rect, Surface
 from pygame.sprite import Sprite, Group
-from boundaries import Segment, Door, Point
+from boundaries import Segment
 from typing import List, Tuple
 
 
 class Box(Sprite):
+    """A sprite with a background image, contains all points, and has no boundaries"""
+    
     def __init__(self, rect: Rect, image: Surface, *args):
         super().__init__()
         self.rect = rect
@@ -15,30 +17,54 @@ class Box(Sprite):
 
     @staticmethod
     def get_points(rect: Rect):
+        """Static method that takes in a rect and
+        returns all points (corners) in that rect"""
         return [
-            Point(rect.x, rect.y),
-            Point((rect.x + rect.width), rect.y),
-            Point((rect.x + rect.width), (rect.y + rect.height)),
-            Point(rect.x, (rect.y + rect.height))
+            (rect.x, rect.y),
+            ((rect.x + rect.width), rect.y),
+            ((rect.x + rect.width), (rect.y + rect.height)),
+            (rect.x, (rect.y + rect.height))
         ]
 
 
 class Building(Box):
-    def __init__(self, rect: Rect, image: Surface, doors: List[Door]):
+    """A box but with boundaries and at least one door,
+    so a player cannot walk inside it but can walk into another map"""
+    
+    def __init__(self, rect: Rect, image: Surface, doors: list):
         super().__init__(rect, image)
         self.boundaries = Building.get_segments(self.points)
         self.doors = doors
 
     @staticmethod
-    def get_segments(points: List[Point]):
+    def get_segments(points: List[Tuple[int, int]]):
+        """Static method that takes in list of points and
+        returns all segments connecting them"""
         boundaries = []
-        prev = points[0]
-        for point in points[1:]:
+        prev = points[-1]
+        for point in points:
             boundaries.append(Segment(prev, point))
-        return boundaries
+            prev = point
+        return [
+            [boundaries[0], boundaries[2]],
+            [boundaries[1], boundaries[3]]
+        ]
+    
+    def update(self, game):
+        player = game.player
+        for i in range(2):
+            old_pos = player.pos[i]
+            new_pos = player.pos[i] + game.move[i]
+            for j in range(2):
+                mid = self.boundaries[i][j].get_mid()
+                if (mid - old_pos < 0) is not (mid - new_pos < 0):
+                    game.move[i] = 0
 
 
 class WildArea(Box):
+    """A box but whenever a player walks over it,
+    it calculates whether/what pokemon will battle"""
+    
     rand = 100
     def __init__(self, rect: Rect, image: Surface, levels: Tuple[int, int], types: list, pokebase: list):
         super().__init__(rect, image)
@@ -46,7 +72,11 @@ class WildArea(Box):
         self.types = types
         self.pokebase = pokebase
 
-    def update(self, game: Game):
+    def update(self, game):
+        """
+        1. Checks whether to have an encounter
+        2. Sends back random pokemon if yes
+        """
         num = random.randrange(0, WildArea.rand)
         if num == WildArea.rand / 2:
             type_adherent = True

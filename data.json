@@ -1,0 +1,60 @@
+{
+    "size": [1920, 1080],
+    "caption": "Pokemon Game",
+    "player": {
+        "name": "Gavin Mason",
+        "color": [0, 0, 0],
+        "size": [25, 25],
+        "current": {
+            "map": 0,
+            "pos": [50, 50]
+        }
+    },
+    "maps": [
+        {
+            "image": "img/map.jpg",
+            "pos": [0, 0],
+            "size": [1920, 1080],
+            "sprites": [
+                {
+                    "type": "Building",
+                    "image": "./img/sprite.jpg",
+                    "pos": [0, 0],
+                    "size": [25, 25],
+                    "doors": [
+                        {
+                            "pos": [[100, 100], [100, 500]],
+                            "dest": 1
+                        }
+                    ]
+                }
+            ],
+            "doors": [
+                {
+                    "pos": [[500, 500], [700, 500]],
+                    "dest": 1
+                }
+            ]
+        },
+        {
+            "image": "img/map.jpg",
+            "pos": [50, 50],
+            "size": [1280, 720],
+            "sprites": [
+                {
+                    "type": "Box",
+                    "image": "./img/sprite.jpg",
+                    "pos": [500, 500],
+                    "size": [25, 25],
+                    "doors": []
+                }
+            ],
+            "doors": [
+                {
+                    "pos": [[100, 100], [100, 500]],
+                    "dest": 0
+                }
+            ]
+        }
+    ]
+}
