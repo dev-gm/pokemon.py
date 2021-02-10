@@ -1,6 +1,7 @@
 import pygame
 import json
 import sys
+import os
 from pygame import Rect, Surface, Color
 from pygame.sprite import Sprite, Group
 from boxes import Box, Building
@@ -72,12 +73,16 @@ class Map(Group):
 class Game(object):
     """Controls the entire game, holds all maps and player, and game loop"""
     
-    def __init__(self, path: str = "./saves/untitled.json"):
+    def __init__(self, save: str = json.load(open("save.json", 'r+').read()).get("save")):
         """Initialized pygame and parses json file"""
         pygame.init()
         self.map = None
-        self.path = path
-        with open(self.path, 'r+') as file:
+        if not save:
+            sys.exit()
+        self.save = save
+        self.path = os.path.join('./', "saves/", self.save)
+        os.chdir(self.path)
+        with open("data.json", 'r+') as file:
             self.parse(json.load(file))
 
     def start(self) -> int:
