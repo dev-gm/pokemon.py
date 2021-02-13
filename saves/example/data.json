@@ -10,24 +10,39 @@
             "pos": [50, 50]
         }
     },
+    "reusable": {
+        "sprites": {
+            "example-sprite": {
+                "type": "Building",
+                "image": "sprite.jpg",
+                "pos": [0, 0],
+                "size": [25, 25],
+                "doors": [
+                    "example-door"
+                ]
+            }
+        },
+        "doors": {
+            "example-door": {
+                "pos": [[100, 100], [100, 500]],
+                "dest": 1
+            },
+            "corner-door": {
+                "pos": [["screen-size.0", "0"], ["screen-size.0+100", "0"]],
+                "dest": 1
+            }
+        },
+        "": {
+            "screen-size": [1920, 1080]
+        }
+    },
     "maps": [
         {
             "image": "map.jpg",
             "pos": [0, 0],
-            "size": [1920, 1080],
+            "size": "screen-size",
             "sprites": [
-                {
-                    "type": "Building",
-                    "image": "sprite.jpg",
-                    "pos": [0, 0],
-                    "size": [25, 25],
-                    "doors": [
-                        {
-                            "pos": [[100, 100], [100, 500]],
-                            "dest": 1
-                        }
-                    ]
-                }
+                "example-sprite"
             ],
             "doors": [
                 {
@@ -50,10 +65,7 @@
                 }
             ],
             "doors": [
-                {
-                    "pos": [[100, 100], [100, 500]],
-                    "dest": 0
-                }
+                "corner-door"
             ]
         }
     ]
