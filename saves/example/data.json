@@ -3,7 +3,7 @@
     "caption": "Pokemon Game",
     "player": {
         "name": "Gavin Mason",
-        "color": [0, 0, 0],
+        "image": "player.png",
         "size": [25, 25],
         "current": {
             "map": 0,
@@ -12,13 +12,13 @@
     },
     "maps": [
         {
-            "image": "img/map.jpg",
+            "image": "map.jpg",
             "pos": [0, 0],
             "size": [1920, 1080],
             "sprites": [
                 {
                     "type": "Building",
-                    "image": "./img/sprite.jpg",
+                    "image": "sprite.jpg",
                     "pos": [0, 0],
                     "size": [25, 25],
                     "doors": [
@@ -37,13 +37,13 @@
             ]
         },
         {
-            "image": "img/map.jpg",
+            "image": "map.jpg",
             "pos": [50, 50],
             "size": [1280, 720],
             "sprites": [
                 {
                     "type": "Box",
-                    "image": "./img/sprite.jpg",
+                    "image": "sprite.jpg",
                     "pos": [500, 500],
                     "size": [25, 25],
                     "doors": []
