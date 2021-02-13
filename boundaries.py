@@ -1,17 +1,20 @@
-import pygame
-from pygame import Surface, Rect
-from typing import Tuple, Union
-from math import sqrt
+"""The module which holds the boundary classes in the
+program, like Segment and Door"""
+
+from typing import Tuple
 
 
 class SegmentNotStraightException(Exception):
+    """Exception for when the points provided for a
+    segment's creation are not aligned with each other"""
     def __init__(self, point_a: Tuple[int, int], point_b: Tuple[int, int]):
-        super().__init__(f"{point_a} is not on the same line as {point_b}, while initializing Segment object.")
+        super().__init__(f"""{point_a} is not on the same line as
+                         {point_b}, while initializing Segment object.""")
 
 
-class Segment(object):
+class Segment:
     """Connects two points together, can be used for boundaries"""
-    
+
     def __init__(self, point_a: Tuple[int, int], point_b: Tuple[int, int]):
         self.mid = None
         for i in range(2):
@@ -20,6 +23,7 @@ class Segment(object):
         if self.mid is None:
             raise SegmentNotStraightException(point_a, point_b)
         self.points = (point_a, point_b)
+
     def get_mid(self):
         """Gets midpoint of segment (i.e. for (1, 3) and (5, 3) it would return 3)"""
         return self.points[self.mid]
@@ -42,7 +46,7 @@ class Segment(object):
 class Door(Segment):
     """A segment that, when the player collides, instead of just
     blocking the movement, it moves the player to another map."""
-    
+
     def __init__(self, point_a: Tuple[int, int], point_b: Tuple[int, int], dest_id: int):
         super().__init__(point_a, point_b)
         self.dest_id = dest_id

@@ -1,15 +1,20 @@
-import pygame, random, pokebase
+"""The module which holds all of the sprite classes, except
+for the player sprite, like boxes, building, and wild area"""
+
+import random
+from typing import List, Tuple
+import pygame
+import pokebase
 import pokebase.interface
 from pygame import Rect, Surface
-from pygame.sprite import Sprite, Group
+from pygame.sprite import Sprite
 from boundaries import Segment
-from typing import List, Tuple
 
 
 class Box(Sprite):
     """A sprite with a background image, contains all points, and has no boundaries"""
-    
-    def __init__(self, rect: Rect, image: Surface, *args):
+
+    def __init__(self, rect: Rect, image: Surface):
         super().__init__()
         self.rect = rect
         self.points = Box.get_points(self.rect)
@@ -30,7 +35,7 @@ class Box(Sprite):
 class Building(Box):
     """A box but with boundaries and at least one door,
     so a player cannot walk inside it but can walk into another map"""
-    
+
     def __init__(self, rect: Rect, image: Surface, doors: list):
         super().__init__(rect, image)
         self.boundaries = Building.get_segments(self.points)
@@ -49,7 +54,7 @@ class Building(Box):
             [boundaries[0], boundaries[2]],
             [boundaries[1], boundaries[3]]
         ]
-    
+
     def update(self, game):
         player = game.player
         for i in range(2):
@@ -57,20 +62,20 @@ class Building(Box):
             new_pos = player.pos[i] + game.move[i]
             for j in range(2):
                 mid = self.boundaries[i][j].get_mid()
-                if (mid - old_pos < 0) is not (mid - new_pos < 0):
+                if mid - old_pos < 0 is not mid - new_pos < 0:
                     game.move[i] = 0
 
 
 class WildArea(Box):
     """A box but whenever a player walks over it,
     it calculates whether/what pokemon will battle"""
-    
+
     rand = 100
-    def __init__(self, rect: Rect, image: Surface, levels: Tuple[int, int], types: list, pokebase: list):
+    def __init__(self, rect: Rect, image: Surface, levels: Tuple[int, int], types: list, all_pokemon: list):
         super().__init__(rect, image)
         self.levels = list(range(levels[0], levels[1]))
         self.types = types
-        self.pokebase = pokebase
+        self.all_pokemon = all_pokemon
 
     def update(self, game):
         """
@@ -82,10 +87,10 @@ class WildArea(Box):
             type_adherent = True
             while type_adherent:
                 type_adherent = True
-                id = random.choice(self.pokebase).pokemon_species.id
-                pokemon = pokebase.pokemon(id)
-                for type in self.types:
-                    if type not in pokemon.types:
+                species_id = random.choice(self.all_pokemon).pokemon_species.id
+                pokemon = self.all_pokemon.pokemon(species_id)
+                for pokemon_type in self.types:
+                    if pokemon_type not in pokemon.types:
                         type_adherent = False
                 if type_adherent:
                     game.update(pokemon, random.choice(self.levels))

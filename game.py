@@ -6,8 +6,8 @@ import sys
 import os
 from typing import List
 import pygame
-from pygame.locals import *
-from pygame import Rect, Surface, Color
+from pygame.locals import QUIT, KEYDOWN, KEYUP, K_w, K_COMMA, K_a, K_s, K_o, K_d, K_e
+from pygame import Rect, Surface
 from pygame.sprite import Sprite, Group
 from boxes import Box, Building
 from boundaries import Door
