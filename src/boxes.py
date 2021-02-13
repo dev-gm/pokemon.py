@@ -8,7 +8,7 @@ import pokebase
 import pokebase.interface
 from pygame import Rect, Surface
 from pygame.sprite import Sprite
-from boundaries import Segment
+from src.boundaries import Segment
 
 
 class Box(Sprite):

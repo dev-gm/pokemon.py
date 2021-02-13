@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from game import Game
+from src.game import Game
 
 if __name__ == "__main__":
     Game().start()
