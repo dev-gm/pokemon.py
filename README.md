@@ -9,7 +9,7 @@ TODO:
   - being able to reference reusable objects inside the "reusable" dict DONE
   - indexing them ("pos.0")
   - adding them ("pos.0+5")
-- Make sure that sprites (boxes, buildings) properly show up
+- Make sure that sprites (boxes, buildings) properly show up DONE
 - Add functionality for
   - pokemon battles
   - dialog
