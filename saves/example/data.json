@@ -18,7 +18,7 @@
                 "pos": [0, 0],
                 "size": [25, 25],
                 "doors": [
-                    "example-door"
+                    "reuse example-door"
                 ]
             }
         },
@@ -32,7 +32,7 @@
                 "dest": 1
             }
         },
-        "": {
+        "other": {
             "screen-size": [1920, 1080]
         }
     },
@@ -40,9 +40,9 @@
         {
             "image": "map.jpg",
             "pos": [0, 0],
-            "size": "screen-size",
+            "size": "reuse screen-size",
             "sprites": [
-                "example-sprite"
+                "reuse example-sprite"
             ],
             "doors": [
                 {

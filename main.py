@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-from src.game import Game
+# from pokemon.game.game import Game
+from parse.save import Save
 
 if __name__ == "__main__":
-    Game().start()
+    save = Save()
+    print(save.maps)

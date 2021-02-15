@@ -8,25 +8,22 @@ from typing import List
 import pygame
 from pygame import Rect
 from pygame.locals import QUIT, KEYDOWN, KEYUP, K_w, K_COMMA, K_a, K_s, K_o, K_d, K_e
-from src.map import Map, Player
-from src.boundaries import Door
+from pokemon.game.map import Map, Player
+from pokemon.game.boundaries import Door
+from pokemon.db.parse import Save
 
 
 class Game:
     """Controls the entire game, holds all maps and player, and game loop"""
 
-    def __init__(self, save: str = json.load(open("./saves/save.json", 'r+')).get("save")):
+    def __init__(self, save: Save = Save()):
         """Initialized pygame and parses json file -
         pass in save name (saves/{save}/)"""
         pygame.init()
-        self.map = None
         if not save:
             sys.exit()
         self.save = save
-        self.path = os.path.join('.', "saves/", self.save)
-        os.chdir(self.path)
-        with open("data.json", 'r+') as file:
-            self.parse(json.load(file))
+        self.parse()
         self.screen = pygame.display.set_mode(self.size)
         pygame.display.set_caption(self.caption)
         self.move = [0, 0]

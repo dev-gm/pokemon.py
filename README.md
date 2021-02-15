@@ -2,13 +2,13 @@
 An open-source pokemon game framework, written with pygame. The base functionality for a pokemon game is there, but users can download or create stories, stored in .json files, and play it.
 
 TODO:
-- Add features to json parsing
-  - reusable sprites and doors
-  - reusable int[2] (pos or size)
-    - indexing them ("pos.0")
-    - adding them ("pos.0+5")
-    - referencing them inside of the definition dict
-  - being able to reference reusable objects inside the "reusable" dict
+- Add features to json parsing (4/6)
+  - reusable sprites and doors DONE
+  - reusable int[2] (pos or size) DONE
+  - referencing them inside of the definition dict DONE
+  - being able to reference reusable objects inside the "reusable" dict DONE
+  - indexing them ("pos.0")
+  - adding them ("pos.0+5")
 - Make sure that sprites (boxes, buildings) properly show up
 - Add functionality for
   - pokemon battles

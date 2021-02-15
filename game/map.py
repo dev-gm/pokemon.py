@@ -5,8 +5,8 @@ from typing import List
 import pygame
 from pygame import Rect, Surface
 from pygame.sprite import Sprite, Group
-from src.boxes import Box, Building
-from src.boundaries import Door
+from pokemon.game.boxes import Box, Building
+from pokemon.game.boundaries import Door
 
 class Player(Sprite):
     """The player class, holds player sprite, pos, and size"""
