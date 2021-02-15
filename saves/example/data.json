@@ -1,5 +1,5 @@
 {
-    "size": [1920, 1080],
+    "size": "reuse screen-size",
     "caption": "Pokemon Game",
     "player": {
         "name": "Gavin Mason",
@@ -28,7 +28,7 @@
                 "dest": 1
             },
             "corner-door": {
-                "pos": [["screen-size.0", "0"], ["screen-size.0+100", "0"]],
+                "pos": [[1920, 1080], [1860, 1080]],
                 "dest": 1
             }
         },
@@ -39,6 +39,7 @@
     "maps": [
         {
             "image": "map.jpg",
+            "caption": "SOMETHING POKEMON",
             "pos": [0, 0],
             "size": "reuse screen-size",
             "sprites": [
@@ -53,6 +54,7 @@
         },
         {
             "image": "map.jpg",
+            "caption": "NOTHING POKEMON",
             "pos": [50, 50],
             "size": [1280, 720],
             "sprites": [
@@ -65,7 +67,7 @@
                 }
             ],
             "doors": [
-                "corner-door"
+                "reuse corner-door"
             ]
         }
     ]

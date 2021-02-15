@@ -8,13 +8,13 @@ import pokebase
 import pokebase.interface
 from pygame import Rect, Surface
 from pygame.sprite import Sprite
-from pokemon.game.boundaries import Segment
+from game.boundaries import Segment
 
 
 class Box(Sprite):
     """A sprite with a background image, contains all points, and has no boundaries"""
 
-    def __init__(self, rect: Rect, image: Surface):
+    def __init__(self, rect: Rect, image: Surface, *args):
         super().__init__()
         self.rect = rect
         self.points = Box.get_points(self.rect)

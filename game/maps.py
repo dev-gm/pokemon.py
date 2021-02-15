@@ -5,8 +5,8 @@ from typing import List
 import pygame
 from pygame import Rect, Surface
 from pygame.sprite import Sprite, Group
-from pokemon.game.boxes import Box, Building
-from pokemon.game.boundaries import Door
+from game.boxes import Box, Building
+from game.boundaries import Door
 
 class Player(Sprite):
     """The player class, holds player sprite, pos, and size"""
@@ -34,7 +34,8 @@ class Player(Sprite):
 class Map(Group):
     """The map class, holds all of the sprites in the map and its own background"""
 
-    def __init__(self, image: Surface, rect: Rect, sprites: List[Sprite], doors: List[Door]):
+    def __init__(self, image: Surface, rect: Rect, sprites: List[Sprite], doors: List[Door], caption: str):
+        self.caption = caption
         self.rect = rect
         self.image = pygame.transform.scale(image, self.rect.size)
         super().__init__(sprites)
