@@ -45,12 +45,9 @@ class Map(Group):
         else:
             self.entrance = (0, 0)
         self.points = []
-        self.boundaries = Building.get_segments(Box.get_points(self.rect))
         for sprite in sprites:
-            self.points.extend(sprite.points)
             if sprite is Building:
                 self.doors.extend(sprite.doors)
-                self.boundaries.extend(sprite.boundaries)
 
     def draw(self, screen: Surface):
         """Draws background and sprites to screen"""

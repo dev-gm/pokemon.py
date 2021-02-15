@@ -32,7 +32,7 @@ class Game:
             sprites = []
             for raw_sprite in raw_map.get("sprites"): # Gets sprites for map from raw sprites
                 try:
-                    globals().get(raw_sprite.get("type"))(
+                    sprite = globals().get(raw_sprite.get("type"))(
                         Rect(raw_sprite.get("pos"), raw_sprite.get("size")),
                         pygame.image.load(os.path.join('.', "img", raw_sprite.get("image"))),
                         [Door(
@@ -43,6 +43,8 @@ class Game:
                     )
                 except TypeError:
                     print(f"{raw_sprite.get('type')} sprite type does not exist")
+                else:
+                    sprites.append(sprite)
             self.maps.append(Map(
                 pygame.image.load(os.path.join('.', "img", raw_map.get("image"))),
                 Rect(raw_map.get("pos"), raw_map.get("size")),
@@ -65,6 +67,7 @@ class Game:
     def start(self):
         """Game loop detects the button clicks, changes
         move var, and updates & draws all sprites on map"""
+        print(self.size)
         self.screen = pygame.display.set_mode(self.size)
         pygame.display.set_caption(self.map.caption)
         while True:
