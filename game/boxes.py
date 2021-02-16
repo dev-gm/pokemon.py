@@ -29,9 +29,13 @@ class Building(Box):
         self.doors = doors
 
     def update(self, game):
-        new_player = Sprite()
-        new_player.rect = Rect([game.player.get_pos()[i] + game.move[i] for i in range(2)], game.player.rect.size)
-        if collide_rect(self, new_player):
+        radius = game.player.radius
+        player_pos = [game.player.get_pos()[i] + game.move[i] + radius[i]
+                      for i in range(2)]
+        pos = (self.rect.y, self.rect.x)
+        bools = [player_pos[i] > pos[i] and player_pos[i] < pos[i] + self.rect.size[i] + radius[i]
+                 for i in range(2)]
+        if bools[0] and bools[1]:
             game.move = [0, 0]
 
 
@@ -48,7 +52,7 @@ class WildArea(Box):
 
     def update(self, game):
         """
-        1. Checks whether to have an encounter
+        1. Checks whether to have an encounter based on random chance
         2. Sends back random pokemon if yes
         """
         num = random.randrange(0, WildArea.rand)

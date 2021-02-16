@@ -24,7 +24,6 @@ class Game:
         self.save = save
         os.chdir(self.save.save_folder)
         self.move = [0, 0]
-        self.movement = 50
         data = self.save.get_data()
         self.size = data.get("size")
         self.maps = []
@@ -57,6 +56,9 @@ class Game:
                 raw_map.get("caption")
             ))
         raw_player = data.get("player")
+        self.speed = raw_player.get("speed")
+        if not self.speed:
+            self.speed = 25
         self.map = self.maps[raw_player.get("current").get("map")]
         self.player = Player(
             raw_player.get("name"),
@@ -67,7 +69,6 @@ class Game:
     def start(self):
         """Game loop detects the button clicks, changes
         move var, and updates & draws all sprites on map"""
-        print(self.size)
         self.screen = pygame.display.set_mode(self.size)
         pygame.display.set_caption(self.map.caption)
         while True:
@@ -97,9 +98,9 @@ class Game:
                     i = 1
                 if event.type == KEYDOWN:
                     if key in possible_keys[:3]: # forward or left (+)
-                        movement = -self.movement
+                        movement = -self.speed
                     else: # backward or right (-)
-                        movement = self.movement
+                        movement = self.speed
         return i, movement
 
     def update(self, *objects):

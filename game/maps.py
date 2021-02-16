@@ -15,7 +15,7 @@ class Player(Sprite):
         self.name = name
         self.rect = rect
         self.image = pygame.transform.scale(image, self.rect.size)
-        self.radius = (self.rect.size[0], 0)
+        self.radius = self.rect.size
         super().__init__()
 
     def get_pos(self):
@@ -57,10 +57,9 @@ class Map(Group):
     def update(self, game):
         """Updates sprites boundaries and map
         boundaries but passes in game as well"""
-        player = game.player
-        radius = player.radius
+        radius = (0, game.player.radius[1])
         for i in range(2):
-            new = player.get_pos()[i] + game.move[i]
-            if new - radius[i] > self.rect.size[i] or new + radius[i] < 0:
+            new = game.player.get_pos()[i] + game.move[i]
+            if new < 0 or new > self.rect.size[i] - radius[i]:
                 game.move[i] = 0
         super().update(game)
