@@ -40,10 +40,7 @@ class Map(Group):
         self.image = pygame.transform.scale(image, self.rect.size)
         super().__init__(sprites)
         self.doors = doors
-        if self.doors:
-            self.entrance = self.doors[0]
-        else:
-            self.entrance = (0, 0)
+        self.entrance = self.doors[0] if self.doors else (0, 0)
         self.points = []
         for sprite in sprites:
             if sprite is Building:
@@ -57,9 +54,15 @@ class Map(Group):
     def update(self, game):
         """Updates sprites boundaries and map
         boundaries but passes in game as well"""
-        radius = (0, game.player.radius[1])
-        for i in range(2):
-            new = game.player.get_pos()[i] + game.move[i]
-            if new < 0 or new > self.rect.size[i] - radius[i]:
-                game.move[i] = 0
+        radius = game.player.radius
+        old_pos = game.player.get_pos()
+        new_pos = [old_pos[i] + game.move[i] + radius[i] for i in range(2)]
+        size = self.rect.size
+        if (new_pos[0] < 0 or new_pos[0] > size[0]) or (new_pos[1] < 0 or new_pos[1] > size[1]): # Checks if new_pos is out of boundaries
+            game.reset_next_turn = True
+            for i in range(2):
+                if game.move[i] < 0: # Checks if move is negative
+                    game.move[i] -= (new_pos[i] - radius[i])
+                elif game.move[i] > 0: # Checks if move is positive
+                    game.move[i] -= (new_pos[i] - size[i])
         super().update(game)

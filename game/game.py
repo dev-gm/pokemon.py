@@ -5,7 +5,13 @@ import sys
 import os
 import pygame
 from pygame import Rect
-from pygame.locals import QUIT, KEYDOWN, KEYUP, K_w, K_COMMA, K_a, K_s, K_o, K_d, K_e
+from pygame.locals import (
+    QUIT, KEYDOWN, KEYUP,
+    K_UP, K_w, K_COMMA,
+    K_LEFT, K_a,
+    K_DOWN, K_s, K_o,
+    K_RIGHT, K_d, K_e
+)
 from game.maps import Map, Player
 from game.boundaries import Door
 from game.boxes import Box, Building, WildArea
@@ -65,6 +71,7 @@ class Game:
             pygame.image.load(os.path.join('.', "img", raw_player.get("image"))),
             Rect(raw_player.get("current").get("pos"), raw_player.get("size"))
         )
+        self.reset_next_turn = False
 
     def start(self):
         """Game loop detects the button clicks, changes
@@ -76,32 +83,24 @@ class Game:
             for event in [pygame.event.wait()]+pygame.event.get():
                 if event.type == QUIT:
                     sys.exit()
-                i, movement = self.get_movement(event)
-                if i is not None:
-                    self.move[i] = movement
+                self.get_movement(event)
             self.update(self.map, self.player)
             pygame.display.update()
 
     def get_movement(self, event):
-        """Gets movement index (0 or 1) and movement val (50/-50),
-        so if it returned (0, 50), then the game.move var would be
-        turned into (x, 50). If None returns, then it stays the same"""
-        i, movement = None, None
-        possible_keys = (K_w, K_COMMA, K_a, K_d, K_e, K_s, K_o)
-        if event.type in (KEYDOWN, KEYUP): # Check if event has key attribute
-            movement = 0
-            key = event.key
-            if key in possible_keys: # Check if key is in possible keys
-                if key in possible_keys[2:5]: # left or right
-                    i = 0
-                else: # top or bottom
-                    i = 1
-                if event.type == KEYDOWN:
-                    if key in possible_keys[:3]: # forward or left (+)
-                        movement = -self.speed
-                    else: # backward or right (-)
-                        movement = self.speed
-        return i, movement
+        """Detects keypresses and changes game.move to match it"""
+        self.move = [0, 0] if self.reset_next_turn else self.move
+        speed = self.speed if event.type == KEYDOWN else 0
+        if event.type in (KEYDOWN, KEYUP): # a key was pressed
+            if event.key in (K_UP, K_w, K_COMMA): # up
+                self.move[1] = -speed
+            elif event.key in (K_DOWN, K_s, K_o): # down
+                self.move[1] = speed
+            if event.key in (K_LEFT, K_a): # left
+                self.move[0] = -speed
+            elif event.key in (K_RIGHT, K_d, K_e): # right
+                self.move[0] = speed
+            self.reset_next_turn = False
 
     def update(self, *objects):
         """Updates and draws the map or player"""

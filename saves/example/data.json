@@ -4,7 +4,7 @@
     "player": {
         "name": "Gavin Mason",
         "image": "player.png",
-        "speed": 25,
+        "speed": 50,
         "size": [25, 25],
         "current": {
             "map": 0,

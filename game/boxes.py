@@ -18,6 +18,14 @@ class Box(Sprite):
         super().__init__()
         self.rect = rect
         self.image = pygame.transform.scale(image, self.rect.size)
+        
+    def get_size(self):
+        """Returns size of Box"""
+        return self.rect.size
+    
+    def get_pos(self):
+        """Returns pos of a Box"""
+        return (self.rect.y, self.rect.x)
 
 
 class Building(Box):
@@ -30,13 +38,15 @@ class Building(Box):
 
     def update(self, game):
         radius = game.player.radius
-        player_pos = [game.player.get_pos()[i] + game.move[i] + radius[i]
-                      for i in range(2)]
-        pos = (self.rect.y, self.rect.x)
-        bools = [player_pos[i] > pos[i] and player_pos[i] < pos[i] + self.rect.size[i] + radius[i]
-                 for i in range(2)]
-        if bools[0] and bools[1]:
-            game.move = [0, 0]
+        old_pos = game.player.get_pos()
+        new_pos = [old_pos[i] + game.move[i] + radius[i] for i in range(2)]
+        start, end = self.get_pos(), [self.get_pos()[i] + self.get_size()[i] + radius[i] for i in range(2)]
+        if (new_pos[0] < end[0] and new_pos[0] > start[0]) and (new_pos[1] < end[1] and new_pos[1] > start[1]):
+            for i in range(2):
+                if game.move[i] < 0: # Checks if move is negative
+                    game.move[i] -= (new_pos[i] - end[i])
+                elif game.move[i] > 0: # Checks if move is positive
+                    game.move[i] -= (new_pos[i] - start[i])
 
 
 class WildArea(Box):
